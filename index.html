@@ -69,7 +69,7 @@
         }
 
         .swapBtns {
-            margin-top: 1em !important;
+            margin-top: 2em !important;
         }
 
         .switchBtn {
@@ -91,6 +91,10 @@
         }
         .swapMenu>.btn.activated {
             background: #14225f;
+
+        }
+        .swapMenu>.btn.activated p {
+            color: white;
         }
         .select-wrapper {
             position: relative;
@@ -105,7 +109,42 @@
             position: absolute;
             font-weight: 900;
         } .swapRate {
-            margin: 0;
+              margin: 0;
+          } .rateAndSwap {
+                margin: 1em 0 !important;
+            } .switchBtn {
+                  background: #4847f6;
+                  color: white;
+                  border: none;
+                  border-radius: 0.5em;
+                  height: 2em;
+                  width: 2em;
+                  transition: all 0.2s;
+              } .switchBtn:hover {
+                    background: #5756f5;
+                }
+        .rateAndSwap * {
+            padding: 0 !important;
+        } .rateLogo {
+              background-color: #221b4f;
+              height: 2em;
+              width: 2em;
+              border-radius: 0.5em;
+          } .rateTitle {
+                margin: 0;color: #ffffffdb;
+            } .rate {
+                  margin: 0;color: #ffffff7d;
+              }
+        .swapBtn {
+            background: #4847f6;
+            color: white;
+            border: none;
+            border-radius: 0.5em;
+            padding: 0.75em;
+            transition: all 0.2s;
+        }
+        .swapBtn:hover {
+            background: #5756f5;
         }
     </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"/>
@@ -126,7 +165,7 @@
     </div>
     <div>
         <div>
-            <p class="amountText">You have <b>100</b> <span>BNB</span></p>
+            <p class="amountText">You have <b>100</b> <span>BNB</span> and <b>1050</b> <span>VGO</span></p>
             <div class="row swapInput">
                 <div class="col-8">
                     <p>You send</p>
@@ -138,21 +177,24 @@
                             <option>BNB</option>
                         </select>
                     </div>
-
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row rateAndSwap">
             <div class="col-8 d-flex text-left align-items-center">
-                <p class="swapRate">Rate: 1 BNB = 1000VGO</p>
+                <div class="rateLogo d-flex justify-content-center align-items-center">
+                    <i class="fas fa-percent"></i>
+                </div>
+                <div style="font-size: 0.75em;margin-left: 1em;">
+                    <p class="rateTitle">Floating rate</p>
+                    <p class="rate">1 BNB ~ <span id="rate">1500</span> VGO</p>
+                </div>
             </div>
-            <div class="col-4 d-flex text-right align-items-center">
-                <button class="switchBtn"><i class="fas fa-long-arrow-alt-up"></i><i
-                        class="fas fa-long-arrow-alt-down"></i></button>
+            <div class="col-4 d-flex text-right justify-content-end align-items-center">
+                <button class="switchBtn"><i class="fas fa-sync"></i></button>
             </div>
         </div>
         <div>
-            <p class="amountText">You have <b>1,050</b> <span>VGO</span></p>
             <div class="row swapInput">
                 <div class="col-8">
                     <p>You Receive</p>
@@ -164,8 +206,7 @@
             </div>
         </div>
         <div class="row swapBtns">
-            <button class="col-6">Allow</button>
-            <button class="col-6">Swap</button>
+            <button class="col-12 swapBtn">Connect your wallet</button>
         </div>
     </div>
 </div>
