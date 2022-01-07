@@ -1,6 +1,18 @@
 <html>
 <head>
     <style>
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
         * {
             --boxColor: #1c154b;
         }
@@ -11,13 +23,21 @@
             font-family: 'Ubuntu' !important;
         }
 
+        .swapWrapper {
+            width: fit-content;
+            margin: auto;
+        }
+
         .swapBox {
             background: var(--boxColor);
             color: white;
-            margin: auto;
-            width: fit-content;
             padding: 2em 3em;
             border-radius: 2em;
+        }
+
+        .swapTopBtns {
+            margin-bottom: 1em;
+            padding: 0 1.5em;
         }
 
         .swapInput {
@@ -154,61 +174,80 @@
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="swapBox">
-    <div class="row swapMenu">
-        <div class="col-6 d-flex justify-content-center align-items-center btn activated">
-            <p>Exchange VGO</p>
+<div class="swapWrapper">
+    <div class="row swapTopBtns">
+        <div class="col-8">
+            <div id="identicon"></div>
+            <p id="accountName"></p>
         </div>
-        <div class="col-6 d-flex justify-content-center align-items-center btn">
-            <p>Invite & earn</p>
+        <div class="col-4 d-flex justify-content-end">
+            <button class="swapBtn" id="btnDisonnect">Disconnect</button>
         </div>
     </div>
-    <div>
+    <div class="swapBox">
+        <div class="row swapMenu">
+            <div class="col-6 d-flex justify-content-center align-items-center btn activated">
+                <p>Exchange VGO</p>
+            </div>
+            <div class="col-6 d-flex justify-content-center align-items-center btn">
+                <p>Invite & earn</p>
+            </div>
+        </div>
         <div>
-            <p class="amountText">You have <b>100</b> <span>BNB</span> and <b>1050</b> <span>VGO</span></p>
-            <div class="row swapInput">
-                <div class="col-8">
-                    <p>You send</p>
-                    <input type="numeric" value="0"/>
-                </div>
-                <div class="col-4 d-flex justify-content-center align-items-center">
-                    <div class="select-wrapper">
-                        <select>
-                            <option>BNB</option>
-                        </select>
+            <div>
+                <p class="amountText">You have <b id="bnbBalance">100</b> <span>BNB</span> and <b id="vgoBalance">1050</b> <span>VGO</span></p>
+                <div class="row swapInput">
+                    <div class="col-8">
+                        <p>You send</p>
+                        <input type="number" value="0">
+                    </div>
+                    <div class="col-4 d-flex justify-content-center align-items-center">
+                        <div class="select-wrapper">
+                            <select>
+                                <option>BNB</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row rateAndSwap">
-            <div class="col-8 d-flex text-left align-items-center">
-                <div class="rateLogo d-flex justify-content-center align-items-center">
-                    <i class="fas fa-percent"></i>
+            <div class="row rateAndSwap">
+                <div class="col-8 d-flex text-left align-items-center">
+                    <div class="rateLogo d-flex justify-content-center align-items-center">
+                        <i class="fas fa-percent"></i>
+                    </div>
+                    <div style="font-size: 0.75em;margin-left: 1em;">
+                        <p class="rateTitle">Floating rate</p>
+                        <p class="rate">1 BNB ~ <span id="rate">1500</span> VGO</p>
+                    </div>
                 </div>
-                <div style="font-size: 0.75em;margin-left: 1em;">
-                    <p class="rateTitle">Floating rate</p>
-                    <p class="rate">1 BNB ~ <span id="rate">1500</span> VGO</p>
-                </div>
-            </div>
-            <div class="col-4 d-flex text-right justify-content-end align-items-center">
-                <button class="switchBtn"><i class="fas fa-sync"></i></button>
-            </div>
-        </div>
-        <div>
-            <div class="row swapInput">
-                <div class="col-8">
-                    <p>You Receive</p>
-                    <input type="numeric" value="0"/>
-                </div>
-                <div class="col-4 d-flex justify-content-center align-items-center">
-                    <p style="font-size: 1em">VGO</p>
+                <div class="col-4 d-flex justify-content-end align-items-center">
+                    <button class="switchBtn"><i class="fas fa-sync"></i></button>
                 </div>
             </div>
-        </div>
-        <div class="row swapBtns">
-            <button class="col-12 swapBtn">Connect your wallet</button>
+            <div>
+                <div class="row swapInput">
+                    <div class="col-8">
+                        <p>You Receive</p>
+                        <input type="number" value="0">
+                    </div>
+                    <div class="col-4 d-flex justify-content-center align-items-center">
+                        <p style="font-size: 1em">VGO</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row swapBtns">
+                <button class="col-12 swapBtn" id="btnConnect">Connect your wallet</button>
+                <button class="col-12 swapBtn" id="btnEnable" style="display: none">Enable VGO</button>
+            </div>
         </div>
     </div>
 </div>
+<script src="https://virgo.net/swap/web3.min.js"></script>
+<script src="https://virgo.net/swap/walletconnect.js"></script>
+<script src="https://virgo.net/swap/web3modal.js"></script>
+<script src="https://virgo.net/swap/jquery.min.js"></script>
+<script src="identicon.js"></script>
+<script src="abi.js"></script>
+<script src="interface.js"></script>
 </body>
 </html>
