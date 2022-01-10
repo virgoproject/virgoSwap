@@ -46,10 +46,12 @@ $("#btnConnect").click(async function(){
         web3.eth.getAccounts().then(function(result){
             $("#btnConnect").hide();
             $("#btnEnable").show();
+            $("#btnDisonnect").show();
 
             account = result[0];
 
             contract = new web3.eth.Contract(tokenABI, tokenAddress, { from: account});
+            pairContract = new web3.eth.Contract(pairABI, pairAddress, { from: account});
 
             updateStats();
             setInterval(function(){
@@ -72,8 +74,20 @@ function updateStats() {
         BNB_balance = result;
         $("#bnbBalance").html(+formatAmount(BNB_balance, 18).toFixed(5));
     });
+
+    getRate().then(function(result){
+       $("#rate").html((result*10100000000).toFixed(5));
+    });
 }
 
 function formatAmount(amount, decimals){
     return amount/Math.pow(10, decimals);
+}
+
+async function onDisconnect(){
+    if (provider.close)
+        await provider.close();
+
+    await web3Modal.clearCachedProvider();
+    location.reload();
 }

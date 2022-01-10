@@ -181,7 +181,7 @@
             <p id="accountName"></p>
         </div>
         <div class="col-4 d-flex justify-content-end">
-            <button class="swapBtn" id="btnDisonnect">Disconnect</button>
+            <button class="swapBtn" id="btnDisonnect" onclick="onDisconnect();" style="display: none;">Disconnect</button>
         </div>
     </div>
     <div class="swapBox">
@@ -195,11 +195,11 @@
         </div>
         <div>
             <div>
-                <p class="amountText">You have <b id="bnbBalance">100</b> <span>BNB</span> and <b id="vgoBalance">1050</b> <span>VGO</span></p>
+                <p class="amountText">You have <b id="bnbBalance">-</b> <span>BNB</span> and <b id="vgoBalance">-</b> <span>VGO</span></p>
                 <div class="row swapInput">
                     <div class="col-8">
                         <p>You send</p>
-                        <input type="number" value="0">
+                        <input type="number" value="0" disabled="true">
                     </div>
                     <div class="col-4 d-flex justify-content-center align-items-center">
                         <div class="select-wrapper">
@@ -217,7 +217,7 @@
                     </div>
                     <div style="font-size: 0.75em;margin-left: 1em;">
                         <p class="rateTitle">Floating rate</p>
-                        <p class="rate">1 BNB ~ <span id="rate">1500</span> VGO</p>
+                        <p class="rate">1 BNB ~ <span id="rate">-</span> VGO</p>
                     </div>
                 </div>
                 <div class="col-4 d-flex justify-content-end align-items-center">
@@ -228,7 +228,7 @@
                 <div class="row swapInput">
                     <div class="col-8">
                         <p>You Receive</p>
-                        <input type="number" value="0">
+                        <input type="number" value="0" disabled="true">
                     </div>
                     <div class="col-4 d-flex justify-content-center align-items-center">
                         <p style="font-size: 1em">VGO</p>
