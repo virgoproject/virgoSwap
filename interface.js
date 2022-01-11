@@ -12,6 +12,8 @@ let account;
 let VGO_balance = 0;
 let BNB_balance = 0;
 
+let allowance = 0;
+
 //Init web3modal once page loaded
 $(window).on('load', function(){
 
@@ -48,6 +50,11 @@ $("#btnConnect").click(async function(){
             $("#btnEnable").show();
             $("#btnDisonnect").show();
 
+            $("#otherAmount").attr("disabled", false);
+            $("#vgoAmount").attr("disabled", false);
+            $("#maxBtn").attr("disabled", false);
+
+
             account = result[0];
 
             contract = new web3.eth.Contract(tokenABI, tokenAddress, { from: account});
@@ -78,6 +85,21 @@ function updateStats() {
     getRate().then(function(result){
        $("#rate").html((result*10100000000).toFixed(5));
     });
+
+    checkAllowance();
+}
+
+function checkAllowance(){
+    getAllowance(account, proxyAddress).then(function(result){
+        allowance = result;
+        if(allowance >= 3003200000000000){
+            $("#btnEnable").hide();
+            $("#btnConvert").show();
+        }else{
+            $("#btnEnable").show();
+            $("#btnConvert").hide();
+        }
+    });
 }
 
 function formatAmount(amount, decimals){
@@ -89,5 +111,61 @@ async function onDisconnect(){
         await provider.close();
 
     await web3Modal.clearCachedProvider();
-    location.reload();
+    window.location.reload();
+}
+
+function otherAmountResize(){
+    $("#otherAmount").css("width", ($("#otherAmount").val().length+2) + "ch");
+};
+
+$("#otherAmount").on("input", function(){
+    otherAmountResize();
+});
+
+$("#maxBtn").click(function(){
+    if($("#maxBtn").attr("disabled") == "true") return;
+   $("#otherAmount").val($("#bnbBalance").html());
+   otherAmountResize();
+});
+
+$("#btnEnable").click(function(){
+    disableBtn($("#btnEnable"));
+    approve(proxyAddress, 6003200000000000).then(function(result){
+        let timer = setInterval(function(){
+            if (allowance > 3003200000000000){
+                clearInterval(timer);
+                enableBtn($("#btnEnable"));
+                return;
+            }
+
+            checkAllowance();
+        }, 3000);
+    }).catch(function(error){
+        console.log(error);
+        enableBtn($("#btnEnable"));
+    });
+});
+
+//disable again inputs as some browsers don't reset inputs states on reload
+$("#otherAmount").attr("disabled", true);
+$("#vgoAmount").attr("disabled", true);
+$("#maxBtn").attr("disabled", true);
+$("#otherAmount").val("0");
+$("#vgoAmount").val("0");
+
+
+function disableBtn(elem) {
+    elem.find("val").hide();
+    elem.find("i").show();
+    elem.attr("disabled", true);
+}
+
+function enableBtn(elem) {
+    elem.find("val").show();
+    elem.find("i").hide();
+    elem.attr("disabled", false);
+}
+
+function isDisabledBtn(elem) {
+    return elem.find("val").css("display") == "none";
 }

@@ -288,3 +288,6 @@ async function getRate(){
     let reserves = await pairContract.methods.getReserves().call();
     return reserves._reserve1 / reserves._reserve0;
 }
+
+
+let proxyAddress = "0x2228bc33747487c06680598566159060e2b71ef8";
