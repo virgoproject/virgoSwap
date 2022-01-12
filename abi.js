@@ -290,4 +290,113 @@ async function getRate(){
 }
 
 
-let proxyAddress = "0x2228bc33747487c06680598566159060e2b71ef8";
+let proxyAddress = "0x85887256add6B36c911ED90554B433476635A85c";
+
+let proxyABI = [
+    {
+        "inputs": [],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address payable",
+                "name": "newAffiliator",
+                "type": "address"
+            }
+        ],
+        "name": "swapBNBForExactVGO",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "amounts",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address payable",
+                "name": "newAffiliator",
+                "type": "address"
+            }
+        ],
+        "name": "swapExactBNBForVGO",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "amounts",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address payable",
+                "name": "newAffiliator",
+                "type": "address"
+            }
+        ],
+        "name": "swapExactVGOForBNB",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "amounts",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address payable",
+                "name": "newAffiliator",
+                "type": "address"
+            }
+        ],
+        "name": "swapVGOForExactBNB",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "amounts",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+];
+
+let proxyContract;
+
+async function swapExactBNBForVGO(amount, affiliator) {
+    return await proxyContract.methods.swapExactBNBForVGO(affiliator).send({value: amount});
+}
+
+async function swapBNBForExactVGO(VGOAmount, BNBAmount, affiliator) {
+    return await proxyContract.methods.swapBNBForExactVGO(VGOAmount, affiliator).send({value: BNBAmount});
+}
