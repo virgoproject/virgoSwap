@@ -66,6 +66,7 @@ $("#btnConnect").click(async function(){
             contract = new web3.eth.Contract(tokenABI, tokenAddress, { from: account});
             pairContract = new web3.eth.Contract(pairABI, pairAddress, { from: account});
             proxyContract = new web3.eth.Contract(proxyABI, proxyAddress, { from: account});
+            routerContract = new web3.eth.Contract(routerABI, routerAddress, { from: account});
 
             updateStats();
             setInterval(function(){
@@ -162,10 +163,9 @@ $("#btnEnable").click(function(){
 function checkValue1(modifyOther){
     let amount = Number.parseFloat($("#otherAmount").val())*1000000000000000000;
 
-    if(isNaN(amount) || amount < 0){
+    if(isNaN(amount) || amount < 0)
         amount = 0;
-        $("#otherAmount").val("0");
-    }
+
 
     if(amount == BNB_balance-2000000000000000)
         $("#maxBtn").hide();
@@ -232,7 +232,7 @@ $("#btnConvert").click(function(){
             });
             break;
         case 2:
-            swapBNBForExactVGO(Math.ceil(Number.parseFloat($("#vgoAmount").val())*100000000), Math.ceil(Number.parseFloat($("#otherAmount").val())*1010000000000000000),"0x0000000000000000000000000000000000000000").then(function (){
+            swapBNBForExactVGO(Math.ceil(Number.parseFloat($("#vgoAmount").val())*100000000), web3.utils.toWei($("#otherAmount").val(), 'ether'),"0x0000000000000000000000000000000000000000").then(function (){
                 enableBtn($("#btnConvert"));
                 updateStats();
                 notyf.success("Trade successful1!");
