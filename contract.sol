@@ -73,19 +73,19 @@ interface IPancakeRouter01 {
         uint deadline
     ) external returns (uint[] memory amounts);
     function swapExactETHForTokens(uint amountOutMin, address[] calldata path, address to, uint deadline)
-        external
-        payable
-        returns (uint[] memory amounts);
+    external
+    payable
+    returns (uint[] memory amounts);
     function swapTokensForExactETH(uint amountOut, uint amountInMax, address[] calldata path, address to, uint deadline)
-        external
-        returns (uint[] memory amounts);
+    external
+    returns (uint[] memory amounts);
     function swapExactTokensForETH(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline)
-        external
-        returns (uint[] memory amounts);
+    external
+    returns (uint[] memory amounts);
     function swapETHForExactTokens(uint amountOut, address[] calldata path, address to, uint deadline)
-        external
-        payable
-        returns (uint[] memory amounts);
+    external
+    payable
+    returns (uint[] memory amounts);
 
     function quote(uint amountA, uint reserveA, uint reserveB) external pure returns (uint amountB);
     function getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) external pure returns (uint amountOut);
@@ -140,56 +140,56 @@ interface IPancakeRouter02 is IPancakeRouter01 {
 }
 
 interface IBEP20 {
-  /**
-   * @dev Returns the amount of tokens in existence.
+    /**
+     * @dev Returns the amount of tokens in existence.
    */
-  function totalSupply() external view returns (uint256);
+    function totalSupply() external view returns (uint256);
 
-  /**
-   * @dev Returns the token decimals.
+    /**
+     * @dev Returns the token decimals.
    */
-  function decimals() external view returns (uint8);
+    function decimals() external view returns (uint8);
 
-  /**
-   * @dev Returns the token symbol.
+    /**
+     * @dev Returns the token symbol.
    */
-  function symbol() external view returns (string memory);
+    function symbol() external view returns (string memory);
 
-  /**
-  * @dev Returns the token name.
+    /**
+    * @dev Returns the token name.
   */
-  function name() external view returns (string memory);
+    function name() external view returns (string memory);
 
-  /**
-   * @dev Returns the bep token owner.
+    /**
+     * @dev Returns the bep token owner.
    */
-  function getOwner() external view returns (address);
+    function getOwner() external view returns (address);
 
-  /**
-   * @dev Returns the amount of tokens owned by `account`.
+    /**
+     * @dev Returns the amount of tokens owned by `account`.
    */
-  function balanceOf(address account) external view returns (uint256);
+    function balanceOf(address account) external view returns (uint256);
 
-  /**
-   * @dev Moves `amount` tokens from the caller's account to `recipient`.
+    /**
+     * @dev Moves `amount` tokens from the caller's account to `recipient`.
    *
    * Returns a boolean value indicating whether the operation succeeded.
    *
    * Emits a {Transfer} event.
    */
-  function transfer(address recipient, uint256 amount) external returns (bool);
+    function transfer(address recipient, uint256 amount) external returns (bool);
 
-  /**
-   * @dev Returns the remaining number of tokens that `spender` will be
+    /**
+     * @dev Returns the remaining number of tokens that `spender` will be
    * allowed to spend on behalf of `owner` through {transferFrom}. This is
    * zero by default.
    *
    * This value changes when {approve} or {transferFrom} are called.
    */
-  function allowance(address _owner, address spender) external view returns (uint256);
+    function allowance(address _owner, address spender) external view returns (uint256);
 
-  /**
-   * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
+    /**
+     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
    *
    * Returns a boolean value indicating whether the operation succeeded.
    *
@@ -202,10 +202,10 @@ interface IBEP20 {
    *
    * Emits an {Approval} event.
    */
-  function approve(address spender, uint256 amount) external returns (bool);
+    function approve(address spender, uint256 amount) external returns (bool);
 
-  /**
-   * @dev Moves `amount` tokens from `sender` to `recipient` using the
+    /**
+     * @dev Moves `amount` tokens from `sender` to `recipient` using the
    * allowance mechanism. `amount` is then deducted from the caller's
    * allowance.
    *
@@ -213,21 +213,21 @@ interface IBEP20 {
    *
    * Emits a {Transfer} event.
    */
-  function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
 
-  /**
-   * @dev Emitted when `value` tokens are moved from one account (`from`) to
+    /**
+     * @dev Emitted when `value` tokens are moved from one account (`from`) to
    * another (`to`).
    *
    * Note that `value` may be zero.
    */
-  event Transfer(address indexed from, address indexed to, uint256 value);
+    event Transfer(address indexed from, address indexed to, uint256 value);
 
-  /**
-   * @dev Emitted when the allowance of a `spender` for an `owner` is set by
+    /**
+     * @dev Emitted when the allowance of a `spender` for an `owner` is set by
    * a call to {approve}. `value` is the new allowance.
    */
-  event Approval(address indexed owner, address indexed spender, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
 /**
@@ -244,8 +244,8 @@ interface IBEP20 {
  * class of bugs, so it's recommended to use it always.
  */
 library SafeMath {
-  /**
-   * @dev Returns the addition of two unsigned integers, reverting on
+    /**
+     * @dev Returns the addition of two unsigned integers, reverting on
    * overflow.
    *
    * Counterpart to Solidity's `+` operator.
@@ -253,15 +253,15 @@ library SafeMath {
    * Requirements:
    * - Addition cannot overflow.
    */
-  function add(uint256 a, uint256 b) internal pure returns (uint256) {
-    uint256 c = a + b;
-    require(c >= a, "SafeMath: addition overflow");
+    function add(uint256 a, uint256 b) internal pure returns (uint256) {
+        uint256 c = a + b;
+        require(c >= a, "SafeMath: addition overflow");
 
-    return c;
-  }
+        return c;
+    }
 
-  /**
-   * @dev Returns the subtraction of two unsigned integers, reverting on
+    /**
+     * @dev Returns the subtraction of two unsigned integers, reverting on
    * overflow (when the result is negative).
    *
    * Counterpart to Solidity's `-` operator.
@@ -269,12 +269,12 @@ library SafeMath {
    * Requirements:
    * - Subtraction cannot overflow.
    */
-  function sub(uint256 a, uint256 b) internal pure returns (uint256) {
-    return sub(a, b, "SafeMath: subtraction overflow");
-  }
+    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+        return sub(a, b, "SafeMath: subtraction overflow");
+    }
 
-  /**
-   * @dev Returns the subtraction of two unsigned integers, reverting with custom message on
+    /**
+     * @dev Returns the subtraction of two unsigned integers, reverting with custom message on
    * overflow (when the result is negative).
    *
    * Counterpart to Solidity's `-` operator.
@@ -282,15 +282,15 @@ library SafeMath {
    * Requirements:
    * - Subtraction cannot overflow.
    */
-  function sub(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
-    require(b <= a, errorMessage);
-    uint256 c = a - b;
+    function sub(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
+        require(b <= a, errorMessage);
+        uint256 c = a - b;
 
-    return c;
-  }
+        return c;
+    }
 
-  /**
-   * @dev Returns the multiplication of two unsigned integers, reverting on
+    /**
+     * @dev Returns the multiplication of two unsigned integers, reverting on
    * overflow.
    *
    * Counterpart to Solidity's `*` operator.
@@ -298,22 +298,22 @@ library SafeMath {
    * Requirements:
    * - Multiplication cannot overflow.
    */
-  function mul(uint256 a, uint256 b) internal pure returns (uint256) {
-    // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
-    // benefit is lost if 'b' is also tested.
-    // See: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/522
-    if (a == 0) {
-      return 0;
+    function mul(uint256 a, uint256 b) internal pure returns (uint256) {
+        // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
+        // benefit is lost if 'b' is also tested.
+        // See: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/522
+        if (a == 0) {
+            return 0;
+        }
+
+        uint256 c = a * b;
+        require(c / a == b, "SafeMath: multiplication overflow");
+
+        return c;
     }
 
-    uint256 c = a * b;
-    require(c / a == b, "SafeMath: multiplication overflow");
-
-    return c;
-  }
-
-  /**
-   * @dev Returns the integer division of two unsigned integers. Reverts on
+    /**
+     * @dev Returns the integer division of two unsigned integers. Reverts on
    * division by zero. The result is rounded towards zero.
    *
    * Counterpart to Solidity's `/` operator. Note: this function uses a
@@ -323,12 +323,12 @@ library SafeMath {
    * Requirements:
    * - The divisor cannot be zero.
    */
-  function div(uint256 a, uint256 b) internal pure returns (uint256) {
-    return div(a, b, "SafeMath: division by zero");
-  }
+    function div(uint256 a, uint256 b) internal pure returns (uint256) {
+        return div(a, b, "SafeMath: division by zero");
+    }
 
-  /**
-   * @dev Returns the integer division of two unsigned integers. Reverts with custom message on
+    /**
+     * @dev Returns the integer division of two unsigned integers. Reverts with custom message on
    * division by zero. The result is rounded towards zero.
    *
    * Counterpart to Solidity's `/` operator. Note: this function uses a
@@ -338,17 +338,17 @@ library SafeMath {
    * Requirements:
    * - The divisor cannot be zero.
    */
-  function div(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
-    // Solidity only automatically asserts when dividing by 0
-    require(b > 0, errorMessage);
-    uint256 c = a / b;
-    // assert(a == b * c + a % b); // There is no case in which this doesn't hold
+    function div(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
+        // Solidity only automatically asserts when dividing by 0
+        require(b > 0, errorMessage);
+        uint256 c = a / b;
+        // assert(a == b * c + a % b); // There is no case in which this doesn't hold
 
-    return c;
-  }
+        return c;
+    }
 
-  /**
-   * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
+    /**
+     * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
    * Reverts when dividing by zero.
    *
    * Counterpart to Solidity's `%` operator. This function uses a `revert`
@@ -358,12 +358,12 @@ library SafeMath {
    * Requirements:
    * - The divisor cannot be zero.
    */
-  function mod(uint256 a, uint256 b) internal pure returns (uint256) {
-    return mod(a, b, "SafeMath: modulo by zero");
-  }
+    function mod(uint256 a, uint256 b) internal pure returns (uint256) {
+        return mod(a, b, "SafeMath: modulo by zero");
+    }
 
-  /**
-   * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
+    /**
+     * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
    * Reverts with custom message when dividing by zero.
    *
    * Counterpart to Solidity's `%` operator. This function uses a `revert`
@@ -373,10 +373,10 @@ library SafeMath {
    * Requirements:
    * - The divisor cannot be zero.
    */
-  function mod(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
-    require(b != 0, errorMessage);
-    return a % b;
-  }
+    function mod(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
+        require(b != 0, errorMessage);
+        return a % b;
+    }
 }
 
 /*
@@ -390,18 +390,18 @@ library SafeMath {
  * This contract is only required for intermediate, library-like contracts.
  */
 contract Context {
-  // Empty internal constructor, to prevent people from mistakenly deploying
-  // an instance of this contract, which should be used via inheritance.
-  constructor () internal { }
+    // Empty internal constructor, to prevent people from mistakenly deploying
+    // an instance of this contract, which should be used via inheritance.
+    constructor () internal { }
 
-  function _msgSender() internal view returns (address payable) {
-    return msg.sender;
-  }
+    function _msgSender() internal view returns (address payable) {
+        return msg.sender;
+    }
 
-  function _msgData() internal view returns (bytes memory) {
-    this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691
-    return msg.data;
-  }
+    function _msgData() internal view returns (bytes memory) {
+        this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691
+        return msg.data;
+    }
 }
 
 contract VirgoSwap is Context {
@@ -426,7 +426,14 @@ contract VirgoSwap is Context {
         _VGOToken.approve(_pancakeRouterAddress, 30032000000000000000000000);
     }
 
+    event Received(address sender, uint amount);
+
+    receive() external payable {
+        emit Received(msg.sender, msg.value);
+    }
+
     mapping (address => address payable) private _affiliates;
+    mapping (address => uint) _earnings;
 
     function swapExactBNBForVGO(address payable newAffiliator) external payable returns (uint[] memory amounts){
         uint toSwap = msg.value.mul(99).div(100);
@@ -435,14 +442,15 @@ contract VirgoSwap is Context {
         if(newAffiliator != 0x0000000000000000000000000000000000000000 && _affiliates[msg.sender] == 0x0000000000000000000000000000000000000000)
             _affiliates[msg.sender] = newAffiliator;
 
-        if(_affiliates[msg.sender] != 0x0000000000000000000000000000000000000000){
-            toSwap = msg.value.mul(995).div(1000);
+        if(_affiliates[msg.sender] != 0x0000000000000000000000000000000000000000)
             affiliator = _affiliates[msg.sender];
-        }
+
 
         uint[] memory tradedAmounts = _pancake.swapExactETHForTokens{value:toSwap}(_pancake.getAmountsOut(toSwap, _routeBNBVGO)[1].mul(999).div(1000), _routeBNBVGO, msg.sender, now.add(300000));
 
         affiliator.transfer(msg.value.sub(toSwap));
+
+        _earnings[affiliator] = _earnings[affiliator].add(msg.value.sub(toSwap));
 
         return tradedAmounts;
     }
@@ -456,10 +464,8 @@ contract VirgoSwap is Context {
         if(newAffiliator != 0x0000000000000000000000000000000000000000 && _affiliates[msg.sender] == 0x0000000000000000000000000000000000000000)
             _affiliates[msg.sender] = newAffiliator;
 
-        if(_affiliates[msg.sender] != 0x0000000000000000000000000000000000000000){
-            toSwap = msg.value.mul(995).div(1000);
+        if(_affiliates[msg.sender] != 0x0000000000000000000000000000000000000000)
             affiliator = _affiliates[msg.sender];
-        }
 
         uint[] memory tradedAmounts = _pancake.swapETHForExactTokens{value:toSwap}(amount, _routeBNBVGO, msg.sender, now.add(300000));
 
@@ -468,11 +474,13 @@ contract VirgoSwap is Context {
         if(address(this).balance > 0)//return any leftover BNB
             msg.sender.transfer(address(this).balance);
 
+        _earnings[affiliator] = _earnings[affiliator].add(msg.value.sub(toSwap));
+
         return tradedAmounts;
     }
 
     function swapExactVGOForBNB(uint amount, address payable newAffiliator) external returns (uint[] memory amounts){
-        require(amount > 0, "amount must be positive"); 
+        require(amount > 0, "amount must be positive");
         require(_VGOToken.allowance(msg.sender, address(this)) >= amount, "Not enough allowance");
         _VGOToken.transferFrom(msg.sender, address(this), amount);
 
@@ -492,13 +500,15 @@ contract VirgoSwap is Context {
         msg.sender.transfer(toPay);
         affiliator.transfer(tradedAmounts[1].sub(toPay));
 
+        _earnings[affiliator] = _earnings[affiliator].add(tradedAmounts[1].sub(toPay));
+
         return tradedAmounts;
     }
 
     function swapVGOForExactBNB(uint amount, address payable newAffiliator) external returns (uint[] memory amounts){
         require(amount > 0, "amount must be positive");
 
-        uint maxSpend = _pancake.getAmountsOut(amount.mul(1011).div(1000), _routeVGOBNB)[1];//1.1% slippage
+        uint maxSpend = _pancake.getAmountsIn(amount.mul(1011).div(1000), _routeVGOBNB)[0];//0.1% slippage
 
         require(_VGOToken.allowance(msg.sender, address(this)) >= maxSpend, "Not enough allowance");
         _VGOToken.transferFrom(msg.sender, address(this), maxSpend);
@@ -509,10 +519,8 @@ contract VirgoSwap is Context {
         if(newAffiliator != 0x0000000000000000000000000000000000000000 && _affiliates[msg.sender] == 0x0000000000000000000000000000000000000000)
             _affiliates[msg.sender] = newAffiliator;
 
-        if(_affiliates[msg.sender] != 0x0000000000000000000000000000000000000000){
-            toBuy = amount.mul(1005).div(1000);
+        if(_affiliates[msg.sender] != 0x0000000000000000000000000000000000000000)
             affiliator = _affiliates[msg.sender];
-        }
 
         uint[] memory tradedAmounts = _pancake.swapTokensForExactETH(toBuy, maxSpend, _routeVGOBNB, address(this), now.add(300000));
 
@@ -522,7 +530,13 @@ contract VirgoSwap is Context {
         if(_VGOToken.balanceOf(address(this)) > 0)//return any leftover VGO
             _VGOToken.transfer(msg.sender, _VGOToken.balanceOf(address(this)));
 
+        _earnings[affiliator] = _earnings[affiliator].add(toBuy.sub(amount));
+
         return tradedAmounts;
+    }
+
+    function rewardOf(address account) external view returns (uint256) {
+        return _earnings[account];
     }
 
 }

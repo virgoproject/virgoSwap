@@ -207,26 +207,24 @@
             </div>
         </div>
         <div>
-            <div>
-                <p class="amountText">You have <b id="bnbBalance">-</b> <span>BNB</span> and <b id="vgoBalance">-</b> <span>VGO</span></p>
-                <div class="row swapInput">
-                    <div class="col-8">
-                        <p>You send</p>
-                        <div>
-                            <input type="text" value="0" disabled="true" id="otherAmount">
-                            <span id="maxBtn" disabled="true">Max</span>
-                        </div>
+            <p class="amountText" id="amountText">You have <b id="bnbBalance">-</b> <span>BNB</span> and <b id="vgoBalance">-</b> <span>VGO</span></p>
+            <div class="row swapInput" id="otherInput">
+                <div class="col-8">
+                    <p id="sendText">You send</p>
+                    <div>
+                        <input type="text" value="0" disabled="true" id="otherAmount">
+                        <span id="maxBtn" disabled="true">Max</span>
                     </div>
-                    <div class="col-4 d-flex justify-content-center align-items-center">
-                        <div class="select-wrapper">
-                            <select>
-                                <option>BNB</option>
-                            </select>
-                        </div>
+                </div>
+                <div class="col-4 d-flex justify-content-center align-items-center">
+                    <div class="select-wrapper">
+                        <select>
+                            <option>BNB</option>
+                        </select>
                     </div>
                 </div>
             </div>
-            <div class="row rateAndSwap">
+            <div class="row rateAndSwap" id="rateAndSwap">
                 <div class="col-8 d-flex text-left align-items-center">
                     <div class="rateLogo d-flex justify-content-center align-items-center">
                         <i class="fas fa-percent"></i>
@@ -237,18 +235,16 @@
                     </div>
                 </div>
                 <div class="col-4 d-flex justify-content-end align-items-center">
-                    <button class="switchBtn"><i class="fas fa-sync"></i></button>
+                    <button class="switchBtn" id="switchBtn"><i class="fas fa-sync"></i></button>
                 </div>
             </div>
-            <div>
-                <div class="row swapInput">
-                    <div class="col-8">
-                        <p>You Receive</p>
-                        <input type="text" value="0" disabled="true" id="vgoAmount">
-                    </div>
-                    <div class="col-4 d-flex justify-content-center align-items-center">
-                        <p style="font-size: 1em">VGO</p>
-                    </div>
+            <div class="row swapInput" id="VGOInput">
+                <div class="col-8">
+                    <p id="receiveText">You Receive</p>
+                    <input type="text" value="0" disabled="true" id="vgoAmount">
+                </div>
+                <div class="col-4 d-flex justify-content-center align-items-center">
+                    <p style="font-size: 1em">VGO</p>
                 </div>
             </div>
             <div class="row swapBtns">

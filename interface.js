@@ -66,7 +66,6 @@ $("#btnConnect").click(async function(){
             contract = new web3.eth.Contract(tokenABI, tokenAddress, { from: account});
             pairContract = new web3.eth.Contract(pairABI, pairAddress, { from: account});
             proxyContract = new web3.eth.Contract(proxyABI, proxyAddress, { from: account});
-            routerContract = new web3.eth.Contract(routerABI, routerAddress, { from: account});
 
             updateStats();
             setInterval(function(){
@@ -174,7 +173,10 @@ function checkValue1(modifyOther){
 
     if(modifyOther){
         $("#vgoAmount").val(formatAmount(amount*rate, 8).toFixed(5));
-        mode = 1;
+        if(mode > 2)
+            mode = 3;
+        else
+            mode = 1;
     }
 
 
@@ -208,7 +210,10 @@ function checkValue2(){
     checkValue1(false);
     otherAmountResize();
 
-    mode = 2;
+    if(mode > 2)
+        mode = 4;
+    else
+        mode = 2;
 }
 
 $("#vgoAmount").on("input", function(){
@@ -221,7 +226,7 @@ $("#btnConvert").click(function(){
 
     switch(mode){
         case 1:
-            swapExactBNBForVGO(Math.ceil(Number.parseFloat($("#otherAmount").val())*1000000000000000000), "0x0000000000000000000000000000000000000000").then(function (){
+            swapExactBNBForVGO(web3.utils.toWei($("#otherAmount").val(), 'ether'), "0x0000000000000000000000000000000000000000").then(function (){
                 enableBtn($("#btnConvert"));
                 updateStats();
                 notyf.success("Trade successful!");
@@ -232,20 +237,57 @@ $("#btnConvert").click(function(){
             });
             break;
         case 2:
-            swapBNBForExactVGO(Math.ceil(Number.parseFloat($("#vgoAmount").val())*100000000), web3.utils.toWei($("#otherAmount").val(), 'ether'),"0x0000000000000000000000000000000000000000").then(function (){
+            swapBNBForExactVGO(Math.ceil(Number.parseFloat($("#vgoAmount").val())*100000000), Math.ceil(Number.parseInt(web3.utils.toWei($("#otherAmount").val(), 'ether'))*1.1),"0x0000000000000000000000000000000000000000").then(function (){
                 enableBtn($("#btnConvert"));
                 updateStats();
-                notyf.success("Trade successful1!");
+                notyf.success("Trade successful!");
             }).catch(function(e){
                 enableBtn($("#btnConvert"));
                 console.log(e);
-                notyf.error("Trade canceled1: " + e.message);
+                notyf.error("Trade canceled: " + e.message);
             });
             break;
+        case 3:
+            swapVGOForExactBNB(web3.utils.toWei($("#otherAmount").val(), 'ether'), "0x0000000000000000000000000000000000000000").then(function (){
+                enableBtn($("#btnConvert"));
+                updateStats();
+                notyf.success("Trade successful!");
+            }).catch(function(e){
+                enableBtn($("#btnConvert"));
+                console.log(e);
+                notyf.error("Trade canceled: " + e.message);
+            });
+            break;
+        case 4:
+            swapExactVGOForBNB(Math.ceil(Number.parseFloat($("#vgoAmount").val())*100000000), "0x0000000000000000000000000000000000000000").then(function (){
+                enableBtn($("#btnConvert"));
+                updateStats();
+                notyf.success("Trade successful!");
+            }).catch(function(e){
+                enableBtn($("#btnConvert"));
+                console.log(e);
+                notyf.error("Trade canceled: " + e.message);
+            });
     }
 
 });
 
+$("#switchBtn").click(function(){
+    if(mode > 2){
+        mode -= 2;
+        $("#VGOInput").insertAfter("#rateAndSwap");
+        $("#otherInput").insertAfter("#amountText");
+    } else {
+        mode += 2;
+        $("#otherInput").insertAfter("#rateAndSwap");
+        $("#VGOInput").insertAfter("#amountText");
+    }
+
+    let text = $("#receiveText").html();
+    let text2 = $("#sendText").html();
+    $("#sendText").html(text);
+    $("#receiveText").html(text2);
+});
 
 //disable again inputs as some browsers don't reset inputs states on reload
 $("#otherAmount").attr("disabled", true);
