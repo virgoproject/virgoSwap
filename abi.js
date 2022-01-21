@@ -388,6 +388,27 @@ let proxyABI = [
         ],
         "stateMutability": "nonpayable",
         "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+        ],
+        "name": "rewardOf",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
     }
 ];
 
@@ -407,4 +428,8 @@ async function swapExactVGOForBNB(amount, affiliator) {
 
 async function swapVGOForExactBNB(amount, affiliator) {
     return await proxyContract.methods.swapVGOForExactBNB(amount, affiliator).send();
+}
+
+async function getTotalReward(address){
+    return await proxyContract.methods.rewardOf(address).call();
 }

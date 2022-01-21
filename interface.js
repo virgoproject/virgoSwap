@@ -45,23 +45,37 @@ $(window).on('load', function(){
 });
 
 
-$("#btnConnect").click(async function(){
+$("#btnConnect").click(function(){
+    connect();
+});
+
+$("#btnConnect2").click(function(){
+    connect();
+});
+
+async function connect(){
     $("#btnConnect").attr("disabled", true);
+    $("#btnConnect2").attr("disabled", true);
     try {
         provider = await web3Modal.connect();
         web3 = new Web3(provider);
 
         web3.eth.getAccounts().then(function(result){
             $("#btnConnect").hide();
+            $("#btnConnect2").hide();
             $("#btnEnable").show();
-            $("#btnDisonnect").show();
+            $("#btnDisconnect").show();
+
+            $("#referralStats").show();
 
             $("#otherAmount").attr("disabled", false);
             $("#vgoAmount").attr("disabled", false);
             $("#maxBtn").attr("disabled", false);
 
-
             account = result[0];
+
+            if(referralAddress == account)
+                referralAddress = "0x0000000000000000000000000000000000000000";
 
             contract = new web3.eth.Contract(tokenABI, tokenAddress, { from: account});
             pairContract = new web3.eth.Contract(pairABI, pairAddress, { from: account});
@@ -72,11 +86,13 @@ $("#btnConnect").click(async function(){
                 updateStats();
             }, 5000);
 
+            retrieveReferral();
         });
     }catch(e){}
 
     $("#btnConnect").attr("disabled", false);
-});
+    $("#btnConnect2").attr("disabled", false);
+}
 
 function updateStats() {
     getBalance(account).then(function(result) {
@@ -92,6 +108,10 @@ function updateStats() {
     getRate().then(function(result){
         rate = result*1.01;
        $("#rate").html((rate*10000000000).toFixed(5));
+    });
+
+    getTotalReward(account).then(function(result) {
+        $("#referralEarnings").html(+formatAmount(result, 18).toFixed(5));
     });
 
     checkAllowance();
@@ -226,10 +246,11 @@ $("#btnConvert").click(function(){
 
     switch(mode){
         case 1:
-            swapExactBNBForVGO(web3.utils.toWei($("#otherAmount").val(), 'ether'), "0x0000000000000000000000000000000000000000").then(function (){
-                enableBtn($("#btnConvert"));
-                updateStats();
-                notyf.success("Trade successful!");
+            swapExactBNBForVGO(web3.utils.toWei($("#otherAmount").val(), 'ether'),
+                referralAddress).then(function (){
+                    enableBtn($("#btnConvert"));
+                    updateStats();
+                    notyf.success("Trade successful!");
             }).catch(function(e){
                 enableBtn($("#btnConvert"));
                 console.log(e);
@@ -237,10 +258,12 @@ $("#btnConvert").click(function(){
             });
             break;
         case 2:
-            swapBNBForExactVGO(Math.ceil(Number.parseFloat($("#vgoAmount").val())*100000000), Math.ceil(Number.parseInt(web3.utils.toWei($("#otherAmount").val(), 'ether'))*1.1),"0x0000000000000000000000000000000000000000").then(function (){
-                enableBtn($("#btnConvert"));
-                updateStats();
-                notyf.success("Trade successful!");
+            swapBNBForExactVGO(Math.ceil(Number.parseFloat($("#vgoAmount").val())*100000000),
+                Math.ceil(Number.parseInt(web3.utils.toWei($("#otherAmount").val(), 'ether'))*1.1),
+                referralAddress).then(function (){
+                    enableBtn($("#btnConvert"));
+                    updateStats();
+                    notyf.success("Trade successful!");
             }).catch(function(e){
                 enableBtn($("#btnConvert"));
                 console.log(e);
@@ -248,10 +271,11 @@ $("#btnConvert").click(function(){
             });
             break;
         case 3:
-            swapVGOForExactBNB(web3.utils.toWei($("#otherAmount").val(), 'ether'), "0x0000000000000000000000000000000000000000").then(function (){
-                enableBtn($("#btnConvert"));
-                updateStats();
-                notyf.success("Trade successful!");
+            swapVGOForExactBNB(web3.utils.toWei($("#otherAmount").val(), 'ether'),
+                referralAddress).then(function (){
+                    enableBtn($("#btnConvert"));
+                    updateStats();
+                    notyf.success("Trade successful!");
             }).catch(function(e){
                 enableBtn($("#btnConvert"));
                 console.log(e);
@@ -259,10 +283,11 @@ $("#btnConvert").click(function(){
             });
             break;
         case 4:
-            swapExactVGOForBNB(Math.ceil(Number.parseFloat($("#vgoAmount").val())*100000000), "0x0000000000000000000000000000000000000000").then(function (){
-                enableBtn($("#btnConvert"));
-                updateStats();
-                notyf.success("Trade successful!");
+            swapExactVGOForBNB(Math.ceil(Number.parseFloat($("#vgoAmount").val())*100000000),
+                referralAddress).then(function (){
+                    enableBtn($("#btnConvert"));
+                    updateStats();
+                    notyf.success("Trade successful!");
             }).catch(function(e){
                 enableBtn($("#btnConvert"));
                 console.log(e);
@@ -294,6 +319,7 @@ $("#otherAmount").attr("disabled", true);
 $("#vgoAmount").attr("disabled", true);
 $("#maxBtn").attr("disabled", true);
 $("#btnConvert").attr("disabled", true);
+$("#btnCopyReferral").attr("disabled", true);
 $("#otherAmount").val("0");
 $("#vgoAmount").val("0");
 
@@ -312,4 +338,38 @@ function enableBtn(elem) {
 
 function isDisabledBtn(elem) {
     return elem.find("val").css("display") == "none";
+}
+
+$("#exchangeBtn").click(function(){
+    if($("#exchangeBtn").hasClass("active")) return;
+
+    $("#referralBtn").removeClass("active");
+    $("#exchangeBtn").addClass("active");
+
+    $("#referralInterface").hide();
+    $("#swapInterface").show();
+});
+
+$("#referralBtn").click(function(){
+    if($("#referralBtn").hasClass("active")) return;
+
+    $("#exchangeBtn").removeClass("active");
+    $("#referralBtn").addClass("active");
+
+    $("#swapInterface").hide();
+    $("#referralInterface").show();
+});
+
+$("#btnCopyReferral").click(function(){
+    var copyText = document.querySelector("#referralInput");
+    copyText.select();
+    document.execCommand("copy");
+});
+
+async function retrieveReferral(){
+    $("#referralInput").attr("placeholder", "Retrieving..");
+    let response = await fetch('https://virgo.net/swap/referral.php?address='+account);
+    let text = await response.text();
+    $("#referralInput").attr("value", "https://virgo.net/?r=" + text);
+    $("#btnCopyReferral").attr("disabled", false);
 }
