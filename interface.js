@@ -80,6 +80,7 @@ async function connect(){
             contract = new web3.eth.Contract(tokenABI, tokenAddress, { from: account});
             pairContract = new web3.eth.Contract(pairABI, pairAddress, { from: account});
             proxyContract = new web3.eth.Contract(proxyABI, proxyAddress, { from: account});
+            referralsContract = new web3.eth.Contract(referralsABI, referralsAddress, { from: account});
 
             updateStats();
             setInterval(function(){
@@ -112,6 +113,10 @@ function updateStats() {
 
     getTotalReward(account).then(function(result) {
         $("#referralEarnings").html(+formatAmount(result, 18).toFixed(5));
+    });
+
+    getAffiliatesCount(account).then(function(result) {
+        $("#affiliatesCount").html(result);
     });
 
     checkAllowance();

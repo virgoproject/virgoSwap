@@ -404,13 +404,23 @@ contract Context {
     }
 }
 
+interface VirgoReferrals {
+
+    function setAffiliate(address payable referrer, address affiliate) external returns (address payable);
+
+    function addEarning(address referrer, uint amount) external;
+
+}
+
 contract VirgoSwap is Context {
     using SafeMath for uint256;
 
     address constant _vgoTokenAddress = 0xbEE5E147e6e40433ff0310f5aE1a66278bc8D678;
     address constant _pancakeRouterAddress = 0x10ED43C718714eb63d5aA57B78B54704E256024E;
+    address constant _referralsAddress = 0x10ED43C718714eb63d5aA57B78B54704E256024E;
     IPancakeRouter02 constant _pancake = IPancakeRouter02(_pancakeRouterAddress);
     IBEP20 constant _VGOToken = IBEP20(_vgoTokenAddress);
+    VirgoReferrals constant _referrals = VirgoReferrals(_referralsAddress);
     address payable constant _FeesRecipient = 0x9D416342af552b4634FCABaA56dfF8aBd2EE19dB;
 
     address[] private _routeBNBVGO = new address[](2);
@@ -432,25 +442,18 @@ contract VirgoSwap is Context {
         emit Received(msg.sender, msg.value);
     }
 
-    mapping (address => address payable) private _affiliates;
-    mapping (address => uint) _earnings;
-
     function swapExactBNBForVGO(address payable newAffiliator) external payable returns (uint[] memory amounts){
         uint toSwap = msg.value.mul(99).div(100);
-        address payable affiliator = _FeesRecipient;
+        address payable affiliator = _referrals.setAffiliate(newAffiliator, msg.sender);
 
-        if(newAffiliator != 0x0000000000000000000000000000000000000000 && _affiliates[msg.sender] == 0x0000000000000000000000000000000000000000)
-            _affiliates[msg.sender] = newAffiliator;
-
-        if(_affiliates[msg.sender] != 0x0000000000000000000000000000000000000000)
-            affiliator = _affiliates[msg.sender];
-
+        if(affiliator == 0x0000000000000000000000000000000000000000)
+            affiliator = _FeesRecipient;
 
         uint[] memory tradedAmounts = _pancake.swapExactETHForTokens{value:toSwap}(_pancake.getAmountsOut(toSwap, _routeBNBVGO)[1].mul(999).div(1000), _routeBNBVGO, msg.sender, now.add(300000));
 
         affiliator.transfer(msg.value.sub(toSwap));
 
-        _earnings[affiliator] = _earnings[affiliator].add(msg.value.sub(toSwap));
+        _referrals.addEarning(affiliator, msg.value.sub(toSwap));
 
         return tradedAmounts;
     }
@@ -459,13 +462,10 @@ contract VirgoSwap is Context {
         require(amount > 0, "amount must be positive");
 
         uint toSwap = msg.value.mul(99).div(100);
-        address payable affiliator = _FeesRecipient;
+        address payable affiliator = _referrals.setAffiliate(newAffiliator, msg.sender);
 
-        if(newAffiliator != 0x0000000000000000000000000000000000000000 && _affiliates[msg.sender] == 0x0000000000000000000000000000000000000000)
-            _affiliates[msg.sender] = newAffiliator;
-
-        if(_affiliates[msg.sender] != 0x0000000000000000000000000000000000000000)
-            affiliator = _affiliates[msg.sender];
+        if(affiliator == 0x0000000000000000000000000000000000000000)
+            affiliator = _FeesRecipient;
 
         uint[] memory tradedAmounts = _pancake.swapETHForExactTokens{value:toSwap}(amount, _routeBNBVGO, msg.sender, now.add(300000));
 
@@ -474,7 +474,7 @@ contract VirgoSwap is Context {
         if(address(this).balance > 0)//return any leftover BNB
             msg.sender.transfer(address(this).balance);
 
-        _earnings[affiliator] = _earnings[affiliator].add(msg.value.sub(toSwap));
+        _referrals.addEarning(affiliator, msg.value.sub(toSwap));
 
         return tradedAmounts;
     }
@@ -487,20 +487,15 @@ contract VirgoSwap is Context {
         uint[] memory tradedAmounts = _pancake.swapExactTokensForETH(amount, _pancake.getAmountsOut(amount, _routeVGOBNB)[1].mul(999).div(1000), _routeVGOBNB, address(this), now.add(300000));
 
         uint toPay = tradedAmounts[1].mul(99).div(100);
-        address payable affiliator = _FeesRecipient;
+        address payable affiliator = _referrals.setAffiliate(newAffiliator, msg.sender);
 
-        if(newAffiliator != 0x0000000000000000000000000000000000000000 && _affiliates[msg.sender] == 0x0000000000000000000000000000000000000000)
-            _affiliates[msg.sender] = newAffiliator;
-
-        if(_affiliates[msg.sender] != 0x0000000000000000000000000000000000000000){
-            toPay = tradedAmounts[1].mul(995).div(1000);
-            affiliator = _affiliates[msg.sender];
-        }
+        if(affiliator == 0x0000000000000000000000000000000000000000)
+            affiliator = _FeesRecipient;
 
         msg.sender.transfer(toPay);
         affiliator.transfer(tradedAmounts[1].sub(toPay));
 
-        _earnings[affiliator] = _earnings[affiliator].add(tradedAmounts[1].sub(toPay));
+        _referrals.addEarning(affiliator, tradedAmounts[1].sub(toPay));
 
         return tradedAmounts;
     }
@@ -514,13 +509,10 @@ contract VirgoSwap is Context {
         _VGOToken.transferFrom(msg.sender, address(this), maxSpend);
 
         uint toBuy = amount.mul(101).div(100);
-        address payable affiliator = _FeesRecipient;
+        address payable affiliator = _referrals.setAffiliate(newAffiliator, msg.sender);
 
-        if(newAffiliator != 0x0000000000000000000000000000000000000000 && _affiliates[msg.sender] == 0x0000000000000000000000000000000000000000)
-            _affiliates[msg.sender] = newAffiliator;
-
-        if(_affiliates[msg.sender] != 0x0000000000000000000000000000000000000000)
-            affiliator = _affiliates[msg.sender];
+        if(affiliator == 0x0000000000000000000000000000000000000000)
+            affiliator = _FeesRecipient;
 
         uint[] memory tradedAmounts = _pancake.swapTokensForExactETH(toBuy, maxSpend, _routeVGOBNB, address(this), now.add(300000));
 
@@ -530,13 +522,9 @@ contract VirgoSwap is Context {
         if(_VGOToken.balanceOf(address(this)) > 0)//return any leftover VGO
             _VGOToken.transfer(msg.sender, _VGOToken.balanceOf(address(this)));
 
-        _earnings[affiliator] = _earnings[affiliator].add(toBuy.sub(amount));
+        _referrals.addEarning(affiliator, toBuy.sub(amount));
 
         return tradedAmounts;
-    }
-
-    function rewardOf(address account) external view returns (uint256) {
-        return _earnings[account];
     }
 
 }
