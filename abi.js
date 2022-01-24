@@ -290,7 +290,7 @@ async function getRate(){
 }
 
 
-let proxyAddress = "0xb95843Aa49ef602FAa210DB12dF517b2479FBEDa";
+let proxyAddress = "0x8eB1F1C035a33BbFE1F1a9255e0CB441AE10e4Fe";
 
 let proxyABI = [
     {
