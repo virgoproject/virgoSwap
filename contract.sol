@@ -230,301 +230,332 @@ interface IBEP20 {
     event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
+// CAUTION
+// This version of SafeMath should only be used with Solidity 0.8 or later,
+// because it relies on the compiler's built in overflow checks.
+
 /**
- * @dev Wrappers over Solidity's arithmetic operations with added overflow
- * checks.
+ * @dev Wrappers over Solidity's arithmetic operations.
  *
- * Arithmetic operations in Solidity wrap on overflow. This can easily result
- * in bugs, because programmers usually assume that an overflow raises an
- * error, which is the standard behavior in high level programming languages.
- * `SafeMath` restores this intuition by reverting the transaction when an
- * operation overflows.
- *
- * Using this library instead of the unchecked operations eliminates an entire
- * class of bugs, so it's recommended to use it always.
+ * NOTE: `SafeMath` is generally not needed starting with Solidity 0.8, since the compiler
+ * now has built in overflow checking.
  */
 library SafeMath {
     /**
-     * @dev Returns the addition of two unsigned integers, reverting on
-   * overflow.
-   *
-   * Counterpart to Solidity's `+` operator.
-   *
-   * Requirements:
-   * - Addition cannot overflow.
-   */
-    function add(uint256 a, uint256 b) internal pure returns (uint256) {
-        uint256 c = a + b;
-        require(c >= a, "SafeMath: addition overflow");
+     * @dev Returns the addition of two unsigned integers, with an overflow flag.
+     *
+     * _Available since v3.4._
+     */
+    function tryAdd(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+        unchecked {
+            uint256 c = a + b;
+            if (c < a) return (false, 0);
+            return (true, c);
+        }
+    }
 
-        return c;
+    /**
+     * @dev Returns the subtraction of two unsigned integers, with an overflow flag.
+     *
+     * _Available since v3.4._
+     */
+    function trySub(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+        unchecked {
+            if (b > a) return (false, 0);
+            return (true, a - b);
+        }
+    }
+
+    /**
+     * @dev Returns the multiplication of two unsigned integers, with an overflow flag.
+     *
+     * _Available since v3.4._
+     */
+    function tryMul(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+        unchecked {
+            // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
+            // benefit is lost if 'b' is also tested.
+            // See: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/522
+            if (a == 0) return (true, 0);
+            uint256 c = a * b;
+            if (c / a != b) return (false, 0);
+            return (true, c);
+        }
+    }
+
+    /**
+     * @dev Returns the division of two unsigned integers, with a division by zero flag.
+     *
+     * _Available since v3.4._
+     */
+    function tryDiv(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+        unchecked {
+            if (b == 0) return (false, 0);
+            return (true, a / b);
+        }
+    }
+
+    /**
+     * @dev Returns the remainder of dividing two unsigned integers, with a division by zero flag.
+     *
+     * _Available since v3.4._
+     */
+    function tryMod(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+        unchecked {
+            if (b == 0) return (false, 0);
+            return (true, a % b);
+        }
+    }
+
+    /**
+     * @dev Returns the addition of two unsigned integers, reverting on
+     * overflow.
+     *
+     * Counterpart to Solidity's `+` operator.
+     *
+     * Requirements:
+     *
+     * - Addition cannot overflow.
+     */
+    function add(uint256 a, uint256 b) internal pure returns (uint256) {
+        return a + b;
     }
 
     /**
      * @dev Returns the subtraction of two unsigned integers, reverting on
-   * overflow (when the result is negative).
-   *
-   * Counterpart to Solidity's `-` operator.
-   *
-   * Requirements:
-   * - Subtraction cannot overflow.
-   */
+     * overflow (when the result is negative).
+     *
+     * Counterpart to Solidity's `-` operator.
+     *
+     * Requirements:
+     *
+     * - Subtraction cannot overflow.
+     */
     function sub(uint256 a, uint256 b) internal pure returns (uint256) {
-        return sub(a, b, "SafeMath: subtraction overflow");
-    }
-
-    /**
-     * @dev Returns the subtraction of two unsigned integers, reverting with custom message on
-   * overflow (when the result is negative).
-   *
-   * Counterpart to Solidity's `-` operator.
-   *
-   * Requirements:
-   * - Subtraction cannot overflow.
-   */
-    function sub(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
-        require(b <= a, errorMessage);
-        uint256 c = a - b;
-
-        return c;
+        return a - b;
     }
 
     /**
      * @dev Returns the multiplication of two unsigned integers, reverting on
-   * overflow.
-   *
-   * Counterpart to Solidity's `*` operator.
-   *
-   * Requirements:
-   * - Multiplication cannot overflow.
-   */
+     * overflow.
+     *
+     * Counterpart to Solidity's `*` operator.
+     *
+     * Requirements:
+     *
+     * - Multiplication cannot overflow.
+     */
     function mul(uint256 a, uint256 b) internal pure returns (uint256) {
-        // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
-        // benefit is lost if 'b' is also tested.
-        // See: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/522
-        if (a == 0) {
-            return 0;
-        }
-
-        uint256 c = a * b;
-        require(c / a == b, "SafeMath: multiplication overflow");
-
-        return c;
+        return a * b;
     }
 
     /**
-     * @dev Returns the integer division of two unsigned integers. Reverts on
-   * division by zero. The result is rounded towards zero.
-   *
-   * Counterpart to Solidity's `/` operator. Note: this function uses a
-   * `revert` opcode (which leaves remaining gas untouched) while Solidity
-   * uses an invalid opcode to revert (consuming all remaining gas).
-   *
-   * Requirements:
-   * - The divisor cannot be zero.
-   */
+     * @dev Returns the integer division of two unsigned integers, reverting on
+     * division by zero. The result is rounded towards zero.
+     *
+     * Counterpart to Solidity's `/` operator.
+     *
+     * Requirements:
+     *
+     * - The divisor cannot be zero.
+     */
     function div(uint256 a, uint256 b) internal pure returns (uint256) {
-        return div(a, b, "SafeMath: division by zero");
-    }
-
-    /**
-     * @dev Returns the integer division of two unsigned integers. Reverts with custom message on
-   * division by zero. The result is rounded towards zero.
-   *
-   * Counterpart to Solidity's `/` operator. Note: this function uses a
-   * `revert` opcode (which leaves remaining gas untouched) while Solidity
-   * uses an invalid opcode to revert (consuming all remaining gas).
-   *
-   * Requirements:
-   * - The divisor cannot be zero.
-   */
-    function div(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
-        // Solidity only automatically asserts when dividing by 0
-        require(b > 0, errorMessage);
-        uint256 c = a / b;
-        // assert(a == b * c + a % b); // There is no case in which this doesn't hold
-
-        return c;
+        return a / b;
     }
 
     /**
      * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
-   * Reverts when dividing by zero.
-   *
-   * Counterpart to Solidity's `%` operator. This function uses a `revert`
-   * opcode (which leaves remaining gas untouched) while Solidity uses an
-   * invalid opcode to revert (consuming all remaining gas).
-   *
-   * Requirements:
-   * - The divisor cannot be zero.
-   */
+     * reverting when dividing by zero.
+     *
+     * Counterpart to Solidity's `%` operator. This function uses a `revert`
+     * opcode (which leaves remaining gas untouched) while Solidity uses an
+     * invalid opcode to revert (consuming all remaining gas).
+     *
+     * Requirements:
+     *
+     * - The divisor cannot be zero.
+     */
     function mod(uint256 a, uint256 b) internal pure returns (uint256) {
-        return mod(a, b, "SafeMath: modulo by zero");
+        return a % b;
+    }
+
+    /**
+     * @dev Returns the subtraction of two unsigned integers, reverting with custom message on
+     * overflow (when the result is negative).
+     *
+     * CAUTION: This function is deprecated because it requires allocating memory for the error
+     * message unnecessarily. For custom revert reasons use {trySub}.
+     *
+     * Counterpart to Solidity's `-` operator.
+     *
+     * Requirements:
+     *
+     * - Subtraction cannot overflow.
+     */
+    function sub(
+        uint256 a,
+        uint256 b,
+        string memory errorMessage
+    ) internal pure returns (uint256) {
+        unchecked {
+            require(b <= a, errorMessage);
+            return a - b;
+        }
+    }
+
+    /**
+     * @dev Returns the integer division of two unsigned integers, reverting with custom message on
+     * division by zero. The result is rounded towards zero.
+     *
+     * Counterpart to Solidity's `/` operator. Note: this function uses a
+     * `revert` opcode (which leaves remaining gas untouched) while Solidity
+     * uses an invalid opcode to revert (consuming all remaining gas).
+     *
+     * Requirements:
+     *
+     * - The divisor cannot be zero.
+     */
+    function div(
+        uint256 a,
+        uint256 b,
+        string memory errorMessage
+    ) internal pure returns (uint256) {
+        unchecked {
+            require(b > 0, errorMessage);
+            return a / b;
+        }
     }
 
     /**
      * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
-   * Reverts with custom message when dividing by zero.
-   *
-   * Counterpart to Solidity's `%` operator. This function uses a `revert`
-   * opcode (which leaves remaining gas untouched) while Solidity uses an
-   * invalid opcode to revert (consuming all remaining gas).
-   *
-   * Requirements:
-   * - The divisor cannot be zero.
-   */
-    function mod(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
-        require(b != 0, errorMessage);
-        return a % b;
+     * reverting with custom message when dividing by zero.
+     *
+     * CAUTION: This function is deprecated because it requires allocating memory for the error
+     * message unnecessarily. For custom revert reasons use {tryMod}.
+     *
+     * Counterpart to Solidity's `%` operator. This function uses a `revert`
+     * opcode (which leaves remaining gas untouched) while Solidity uses an
+     * invalid opcode to revert (consuming all remaining gas).
+     *
+     * Requirements:
+     *
+     * - The divisor cannot be zero.
+     */
+    function mod(
+        uint256 a,
+        uint256 b,
+        string memory errorMessage
+    ) internal pure returns (uint256) {
+        unchecked {
+            require(b > 0, errorMessage);
+            return a % b;
+        }
     }
 }
 
-/*
+// SPDX-License-Identifier: MIT
+// OpenZeppelin Contracts v4.4.1 (utils/Context.sol)
+
+/**
  * @dev Provides information about the current execution context, including the
  * sender of the transaction and its data. While these are generally available
  * via msg.sender and msg.data, they should not be accessed in such a direct
- * manner, since when dealing with GSN meta-transactions the account sending and
+ * manner, since when dealing with meta-transactions the account sending and
  * paying for execution may not be the actual sender (as far as an application
  * is concerned).
  *
  * This contract is only required for intermediate, library-like contracts.
  */
-contract Context {
-    // Empty internal constructor, to prevent people from mistakenly deploying
-    // an instance of this contract, which should be used via inheritance.
-    constructor () internal { }
-
-    function _msgSender() internal view returns (address payable) {
+abstract contract Context {
+    function _msgSender() internal view virtual returns (address) {
         return msg.sender;
     }
 
-    function _msgData() internal view returns (bytes memory) {
-        this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691
+    function _msgData() internal view virtual returns (bytes calldata) {
         return msg.data;
     }
-}
-
-interface VirgoReferrals {
-
-    function setAffiliate(address payable referrer, address affiliate) external returns (address payable);
-
-    function addEarning(address referrer, uint amount) external;
-
 }
 
 contract VirgoSwap is Context {
     using SafeMath for uint256;
 
-    address constant _vgoTokenAddress = 0xbEE5E147e6e40433ff0310f5aE1a66278bc8D678;
+    uint256 constant MAX_INT = 2**256 - 1;
+
     address constant _pancakeRouterAddress = 0x10ED43C718714eb63d5aA57B78B54704E256024E;
-    address constant _referralsAddress = 0x10ED43C718714eb63d5aA57B78B54704E256024E;
     IPancakeRouter02 constant _pancake = IPancakeRouter02(_pancakeRouterAddress);
-    IBEP20 constant _VGOToken = IBEP20(_vgoTokenAddress);
-    VirgoReferrals constant _referrals = VirgoReferrals(_referralsAddress);
-    address payable constant _FeesRecipient = 0x9D416342af552b4634FCABaA56dfF8aBd2EE19dB;
-
-    address[] private _routeBNBVGO = new address[](2);
-    address[] private _routeVGOBNB = new address[](2);
-
-    constructor() public {
-        _routeBNBVGO[0] = _pancake.WETH();
-        _routeBNBVGO[1] = _vgoTokenAddress;
-
-        _routeVGOBNB[0] = _vgoTokenAddress;
-        _routeVGOBNB[1] = _pancake.WETH();
-
-        _VGOToken.approve(_pancakeRouterAddress, 30032000000000000000000000);
-    }
+    
+    address payable constant _FeesRecipient = payable(0x9D416342af552b4634FCABaA56dfF8aBd2EE19dB);
 
     event Received(address sender, uint amount);
+                                                                     
+    constructor() {}
 
     receive() external payable {
         emit Received(msg.sender, msg.value);
     }
 
-    function swapExactBNBForVGO(address payable newAffiliator) external payable returns (uint[] memory amounts){
-        uint toSwap = msg.value.mul(99).div(100);
-        address payable affiliator = _referrals.setAffiliate(newAffiliator, msg.sender);
+    event Swap(address caller, address from, address to, uint256 amountIn, uint256 amountOut);
 
-        if(affiliator == 0x0000000000000000000000000000000000000000)
-            affiliator = _FeesRecipient;
-
-        uint[] memory tradedAmounts = _pancake.swapExactETHForTokens{value:toSwap}(_pancake.getAmountsOut(toSwap, _routeBNBVGO)[1].mul(999).div(1000), _routeBNBVGO, msg.sender, now.add(300000));
-
-        affiliator.transfer(msg.value.sub(toSwap));
-
-        _referrals.addEarning(affiliator, msg.value.sub(toSwap));
-
-        return tradedAmounts;
-    }
-
-    function swapBNBForExactVGO(uint amount, address payable newAffiliator) external payable returns (uint[] memory amounts) {
-        require(amount > 0, "amount must be positive");
+    function swapExactBNBForToken(address[] calldata route) external payable {
+        require(msg.value > 0, "amount must be positive");
 
         uint toSwap = msg.value.mul(99).div(100);
-        address payable affiliator = _referrals.setAffiliate(newAffiliator, msg.sender);
 
-        if(affiliator == 0x0000000000000000000000000000000000000000)
-            affiliator = _FeesRecipient;
+        uint[] memory amountsOut = _pancake.getAmountsOut(toSwap, route);
 
-        uint[] memory tradedAmounts = _pancake.swapETHForExactTokens{value:toSwap}(amount, _routeBNBVGO, msg.sender, now.add(300000));
+        _pancake.swapExactETHForTokensSupportingFeeOnTransferTokens{value:toSwap}(amountsOut[amountsOut.length.sub(1)].mul(999).div(1000), route, msg.sender, block.timestamp.add(300000));
 
-        affiliator.transfer(msg.value.sub(toSwap));
+        _FeesRecipient.transfer(msg.value.sub(toSwap));
 
-        if(address(this).balance > 0)//return any leftover BNB
-            msg.sender.transfer(address(this).balance);
-
-        _referrals.addEarning(affiliator, msg.value.sub(toSwap));
-
-        return tradedAmounts;
+        emit Swap(msg.sender, route[0], route[route.length.sub(1)], msg.value, amountsOut[amountsOut.length.sub(1)]);
     }
 
-    function swapExactVGOForBNB(uint amount, address payable newAffiliator) external returns (uint[] memory amounts){
+
+    function swapExactTokenForBNB(uint amount, address[] calldata route) external {
         require(amount > 0, "amount must be positive");
-        require(_VGOToken.allowance(msg.sender, address(this)) >= amount, "Not enough allowance");
-        _VGOToken.transferFrom(msg.sender, address(this), amount);
 
-        uint[] memory tradedAmounts = _pancake.swapExactTokensForETH(amount, _pancake.getAmountsOut(amount, _routeVGOBNB)[1].mul(999).div(1000), _routeVGOBNB, address(this), now.add(300000));
+        IBEP20 token = IBEP20(route[0]);
 
-        uint toPay = tradedAmounts[1].mul(99).div(100);
-        address payable affiliator = _referrals.setAffiliate(newAffiliator, msg.sender);
+        require(token.allowance(msg.sender, address(this)) >= amount, "Not enough allowance");
 
-        if(affiliator == 0x0000000000000000000000000000000000000000)
-            affiliator = _FeesRecipient;
+        token.transferFrom(msg.sender, address(this), amount);
 
-        msg.sender.transfer(toPay);
-        affiliator.transfer(tradedAmounts[1].sub(toPay));
+        if(token.allowance(address(this), _pancakeRouterAddress) < amount)
+            token.approve(_pancakeRouterAddress, MAX_INT);
 
-        _referrals.addEarning(affiliator, tradedAmounts[1].sub(toPay));
+        uint[] memory amountsOut = _pancake.getAmountsOut(amount, route);
 
-        return tradedAmounts;
+        _pancake.swapExactTokensForETHSupportingFeeOnTransferTokens(amount, amountsOut[amountsOut.length.sub(1)].mul(999).div(1000), route, address(this), block.timestamp.add(300000));
+
+        uint toPay = amountsOut[amountsOut.length.sub(1)].mul(99).div(100);
+
+        payable(msg.sender).transfer(toPay);
+        _FeesRecipient.transfer(address(this).balance);
+
+        emit Swap(msg.sender, route[0], route[route.length.sub(1)], amount, toPay);
     }
 
-    function swapVGOForExactBNB(uint amount, address payable newAffiliator) external returns (uint[] memory amounts){
+    function swapExactTokenForToken(uint amount, address[] calldata route) external {
         require(amount > 0, "amount must be positive");
 
-        uint maxSpend = _pancake.getAmountsIn(amount.mul(1011).div(1000), _routeVGOBNB)[0];//0.1% slippage
+        IBEP20 token = IBEP20(route[0]);
 
-        require(_VGOToken.allowance(msg.sender, address(this)) >= maxSpend, "Not enough allowance");
-        _VGOToken.transferFrom(msg.sender, address(this), maxSpend);
+        require(token.allowance(msg.sender, address(this)) >= amount, "Not enough allowance");
 
-        uint toBuy = amount.mul(101).div(100);
-        address payable affiliator = _referrals.setAffiliate(newAffiliator, msg.sender);
+        token.transferFrom(msg.sender, address(this), amount);
 
-        if(affiliator == 0x0000000000000000000000000000000000000000)
-            affiliator = _FeesRecipient;
+        if(token.allowance(address(this), _pancakeRouterAddress) < amount)
+            token.approve(_pancakeRouterAddress, MAX_INT);
 
-        uint[] memory tradedAmounts = _pancake.swapTokensForExactETH(toBuy, maxSpend, _routeVGOBNB, address(this), now.add(300000));
+        uint toSwap = amount.mul(99).div(100);
 
-        msg.sender.transfer(amount);
-        affiliator.transfer(toBuy.sub(amount));
+        uint[] memory amountsOut = _pancake.getAmountsOut(toSwap, route);
 
-        if(_VGOToken.balanceOf(address(this)) > 0)//return any leftover VGO
-            _VGOToken.transfer(msg.sender, _VGOToken.balanceOf(address(this)));
+        _pancake.swapExactTokensForTokensSupportingFeeOnTransferTokens(toSwap, amountsOut[amountsOut.length.sub(1)].mul(999).div(1000), route, msg.sender, block.timestamp.add(300000));
+        
+        token.transfer(_FeesRecipient, amount.sub(toSwap));
 
-        _referrals.addEarning(affiliator, toBuy.sub(amount));
-
-        return tradedAmounts;
+        emit Swap(msg.sender, route[0], route[route.length.sub(1)], amount, amountsOut[amountsOut.length.sub(1)]);
     }
 
 }
